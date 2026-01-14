@@ -22,8 +22,22 @@ class MathGenerator {
       }
       
       // 生成 num2 的十位數（1-9，但不能超過maxNum2的十位數）
+      // 同時確保十位數相加不等於10
       int maxTens2 = (maxNum2 ~/ 10).clamp(1, 9);
-      int tens2 = _random.nextInt(maxTens2) + 1; // 至少是1，確保num2是兩位數
+      int tens1 = num1 ~/ 10;
+      int tens2;
+      
+      // 如果 tens1 + maxTens2 可能等於10，需要限制範圍
+      if (tens1 + maxTens2 >= 10) {
+        // 確保 tens1 + tens2 < 10
+        int maxAllowedTens2 = 9 - tens1;
+        if (maxAllowedTens2 < 1) {
+          continue; // 無法生成，重新開始
+        }
+        tens2 = _random.nextInt(maxAllowedTens2.clamp(1, maxTens2)) + 1;
+      } else {
+        tens2 = _random.nextInt(maxTens2) + 1; // 至少是1，確保num2是兩位數
+      }
       
       // 生成 num2 的個位數，確保：
       // 1. 個位數相加不超過9（不進位）
@@ -50,7 +64,10 @@ class MathGenerator {
         num2 = 50;
         break;
       }
-    } while (num1 + num2 > 100 || (num1 % 10) + (num2 % 10) > 9 || num2 < 10);
+    } while (num1 + num2 > 100 || 
+             (num1 % 10) + (num2 % 10) > 9 || 
+             num2 < 10 ||
+             (num1 ~/ 10) + (num2 ~/ 10) == 10); // 確保十位數相加不等於10
 
     return GameState(
       num1: num1,
