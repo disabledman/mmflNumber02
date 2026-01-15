@@ -137,6 +137,7 @@ class AdditionDisplay extends StatelessWidget {
     bool isOnesStage = gameState.currentStage == AnswerStage.ones;
     bool isTensStage = gameState.currentStage == AnswerStage.tens;
     bool showAnswer = gameState.showFullAnswer;
+    bool showOnesAnswer = gameState.showOnesAnswer;
 
     return Table(
       border: TableBorder(), // 無邊框，網格線不可見
@@ -227,20 +228,40 @@ class AdditionDisplay extends StatelessWidget {
           ],
         ),
         // 第四行：答案（如果顯示）
-        if (showAnswer)
+        if (showAnswer || showOnesAnswer)
           TableRow(
             children: [
               _buildTableCell('', 60, null, false, fontSize: 72), // 確保高度一致
               ...answerDigits.asMap().entries.map((entry) {
+                int index = entry.key;
                 int? digit = entry.value;
-                return _buildTableCell(
-                  digit?.toString() ?? '',
-                  60,
-                  null,
-                  false,
-                  textColor: Colors.green,
-                  fontSize: 72, // 放大2倍：從36改為72
-                );
+                
+                // 如果只顯示個位數答案，其他位數留空
+                if (showOnesAnswer && !showAnswer) {
+                  // 只顯示個位數（最後一列）
+                  if (index == maxDigits - 1) {
+                    return _buildTableCell(
+                      digit?.toString() ?? '',
+                      60,
+                      null,
+                      false,
+                      textColor: Colors.green,
+                      fontSize: 72,
+                    );
+                  } else {
+                    return _buildTableCell('', 60, null, false, fontSize: 72);
+                  }
+                } else {
+                  // 顯示完整答案
+                  return _buildTableCell(
+                    digit?.toString() ?? '',
+                    60,
+                    null,
+                    false,
+                    textColor: Colors.green,
+                    fontSize: 72, // 放大2倍：從36改為72
+                  );
+                }
               }).toList(),
             ],
           ),

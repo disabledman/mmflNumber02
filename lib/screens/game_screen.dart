@@ -48,6 +48,7 @@ class _GameScreenState extends State<GameScreen> {
       _gameState.showFireworks = false;
       _gameState.showCorrectAnswer = false;
       _gameState.showFullAnswer = false;
+      _gameState.showOnesAnswer = false;
       
       _currentOptions = MathGenerator.generateAnswerOptions(
         _gameState.correctAnswer,
@@ -80,7 +81,11 @@ class _GameScreenState extends State<GameScreen> {
     });
 
     if (isCorrect) {
-      // 答對個位數，進入十位數階段
+      // 答對個位數，顯示個位數答案並進入十位數階段
+      setState(() {
+        _gameState.showOnesAnswer = true;
+      });
+      
       Future.delayed(const Duration(milliseconds: 800), () {
         if (mounted) {
           setState(() {

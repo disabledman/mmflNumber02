@@ -18,6 +18,7 @@ class GameState {
   bool showFireworks;
   bool showCorrectAnswer;
   bool showFullAnswer; // 顯示完整答案（答對後）
+  bool showOnesAnswer; // 顯示個位數答案（個位數答對後）
   int? correctOnesAnswer;
   int? correctTensAnswer;
 
@@ -31,6 +32,7 @@ class GameState {
     this.showFireworks = false,
     this.showCorrectAnswer = false,
     this.showFullAnswer = false,
+    this.showOnesAnswer = false,
     this.correctOnesAnswer,
     this.correctTensAnswer,
   });
@@ -56,6 +58,7 @@ class GameState {
     bool? showFireworks,
     bool? showCorrectAnswer,
     bool? showFullAnswer,
+    bool? showOnesAnswer,
     int? correctOnesAnswer,
     int? correctTensAnswer,
   }) {
@@ -69,6 +72,7 @@ class GameState {
       showFireworks: showFireworks ?? this.showFireworks,
       showCorrectAnswer: showCorrectAnswer ?? this.showCorrectAnswer,
       showFullAnswer: showFullAnswer ?? this.showFullAnswer,
+      showOnesAnswer: showOnesAnswer ?? this.showOnesAnswer,
       correctOnesAnswer: correctOnesAnswer ?? this.correctOnesAnswer,
       correctTensAnswer: correctTensAnswer ?? this.correctTensAnswer,
     );
