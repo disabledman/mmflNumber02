@@ -174,8 +174,9 @@ class _GameScreenState extends State<GameScreen> {
               ),
             ),
             child: SafeArea(
-              child: Column(
-                children: [
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
                   // 頂部欄：返回按鈕和分數
                   Padding(
                     padding: const EdgeInsets.all(16.0),
@@ -334,7 +335,8 @@ class _GameScreenState extends State<GameScreen> {
                         ),
                       ),
                     ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
