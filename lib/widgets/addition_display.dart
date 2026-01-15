@@ -227,6 +227,24 @@ class AdditionDisplay extends StatelessWidget {
             }).toList(),
           ],
         ),
+        // 分隔線行（在被加數和答案之間）- 始終顯示
+        TableRow(
+          children: [
+            _buildTableCell('', 60, null, false),
+            ...List.generate(maxDigits, (index) {
+              return Container(
+                width: 60,
+                height: 30,
+                alignment: Alignment.center,
+                child: Container(
+                  height: 2,
+                  width: 60,
+                  color: Colors.black,
+                ),
+              );
+            }),
+          ],
+        ),
         // 第四行：答案（如果顯示）
         if (showAnswer || showOnesAnswer)
           TableRow(
