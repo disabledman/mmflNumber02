@@ -6,7 +6,6 @@ import '../widgets/addition_display.dart';
 import '../widgets/answer_options.dart';
 import '../widgets/fireworks_effect.dart';
 import '../widgets/score_display.dart';
-import 'home_screen.dart';
 
 class GameScreen extends StatefulWidget {
   final GameMode mode;
@@ -53,6 +52,8 @@ class _GameScreenState extends State<GameScreen> {
       _currentOptions = MathGenerator.generateAnswerOptions(
         _gameState.correctAnswer,
         true, // 個位數階段
+        isAdvanced: _gameState.mode == GameMode.advanced,
+        onesStageAnswer: (_gameState.num1 % 10) + (_gameState.num2 % 10),
       );
       _isProcessingAnswer = false;
     });
@@ -73,11 +74,12 @@ class _GameScreenState extends State<GameScreen> {
   }
 
   void _handleOnesAnswer(int selectedAnswer) {
-    bool isCorrect = selectedAnswer == _gameState.onesDigit;
+    final int onesStageCorrectAnswer = (_gameState.num1 % 10) + (_gameState.num2 % 10);
+    bool isCorrect = selectedAnswer == onesStageCorrectAnswer;
 
     setState(() {
       _gameState.selectedOnesAnswer = selectedAnswer;
-      _gameState.correctOnesAnswer = _gameState.onesDigit;
+      _gameState.correctOnesAnswer = onesStageCorrectAnswer;
     });
 
     if (isCorrect) {

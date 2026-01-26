@@ -110,10 +110,6 @@ class MathGenerator {
         }
       }
       
-      // 驗證個位數相加會進位
-      int ones1Final = num1 % 10;
-      int ones2Final = num2 % 10;
-      
       attempts++;
       if (attempts > 100) {
         // 防止無限循環，使用默認值（強制進位）
@@ -132,18 +128,36 @@ class MathGenerator {
     );
   }
 
-  static List<int> generateAnswerOptions(int correctAnswer, bool isOnesStage, {bool isAdvanced = false}) {
+  static List<int> generateAnswerOptions(
+    int correctAnswer,
+    bool isOnesStage, {
+    bool isAdvanced = false,
+    int? onesStageAnswer,
+  }) {
     Set<int> options = {};
     
     if (isOnesStage) {
-      // 個位數選項：正確答案的個位數 + 3個錯誤選項
-      int correctOnes = correctAnswer % 10;
-      options.add(correctOnes);
-      
-      while (options.length < 4) {
-        int wrongOnes = _random.nextInt(10);
-        if (wrongOnes != correctOnes) {
-          options.add(wrongOnes);
+      // 第一階段（個位數相加）
+      // - 基礎版：維持 0-9
+      // - 進階版：顯示個位數相加的完整結果（10-18），例如 8+7=15 -> 顯示 15
+      final int correctOnesStageAnswer = onesStageAnswer ?? (correctAnswer % 10);
+      options.add(correctOnesStageAnswer);
+
+      if (isAdvanced) {
+        // 進階版：個位數相加必定進位，所以答案範圍為 10-18
+        while (options.length < 4) {
+          final int wrong = 10 + _random.nextInt(9); // 10-18
+          if (wrong != correctOnesStageAnswer) {
+            options.add(wrong);
+          }
+        }
+      } else {
+        // 基礎版：0-9
+        while (options.length < 4) {
+          final int wrong = _random.nextInt(10); // 0-9
+          if (wrong != correctOnesStageAnswer) {
+            options.add(wrong);
+          }
         }
       }
     } else {
@@ -210,11 +224,11 @@ class MathGenerator {
     
     // 驗證正確答案在選項中（在打亂前）
     if (isOnesStage) {
-      int correctOnes = correctAnswer % 10;
-      if (!optionsList.contains(correctOnes)) {
+      final int correctOnesStageAnswer = onesStageAnswer ?? (correctAnswer % 10);
+      if (!optionsList.contains(correctOnesStageAnswer)) {
         // 如果不在選項中，強制添加
         optionsList.removeAt(0);
-        optionsList.add(correctOnes);
+        optionsList.add(correctOnesStageAnswer);
       }
     } else {
       if (isAdvanced) {
@@ -239,9 +253,11 @@ class MathGenerator {
     
     // 最終驗證
     if (isOnesStage) {
-      int correctOnes = correctAnswer % 10;
-      assert(optionsList.contains(correctOnes), 
-        '個位數正確答案 $correctOnes 不在選項中，選項=$optionsList');
+      final int correctOnesStageAnswer = onesStageAnswer ?? (correctAnswer % 10);
+      assert(
+        optionsList.contains(correctOnesStageAnswer),
+        '第一階段正確答案 $correctOnesStageAnswer 不在選項中，選項=$optionsList',
+      );
     } else {
       if (isAdvanced) {
         int correctTensWithHundreds = correctAnswer ~/ 10;
